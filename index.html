@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Amazing Girlfriend 💕</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #5a3e36;
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+            opacity: 0;
+            transform: translateX(100%);
+            text-align: center;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .page.previous {
+            transform: translateX(-100%);
+        }
+
+        .content {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #d46a6a;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #d46a6a;
+            margin: 20px 0;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .heart {
+            color: #ff6b6b;
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 20px 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+        }
+
+        .memory-card {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd1dc, #ffafbd);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(135deg, #a8e6cf, #6fcf97);
+            cursor: default;
+        }
+
+        .love-meter {
+            width: 100%;
+            height: 30px;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .love-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffafbd);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 1s;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: popIn 0.5s ease-out;
+        }
+
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border: 10px solid #ffd1dc;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background-color: #ffd1dc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem;
+            color: #ff6b6b;
+        }
+
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart-float {
+            position: absolute;
+            font-size: 20px;
+            color: #ff6b6b;
+            opacity: 0.7;
+            animation: float 5s linear infinite;
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background-color: white;
+            transform: scale(1.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes popIn {
+            0% { 
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .memory-game {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .memory-card {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container" id="heartsContainer"></div>
+    
+    <div class="page-container">
+        <!-- Page 1: Welcome -->
+        <div class="page active" id="page1">
+            <div class="content">
+                <h1>For My Shuttumani <span class="heart">❤️</span></h1>
+                <div class="photo-frame">
+                    ❤️
+                </div>
+                <p>I created this special website just for you to show how much you mean to me!</p>
+                <p>Get ready for a journey of love and surprises...</p>
+                <button class="btn" onclick="nextPage(2)">
+                    <i class="fas fa-heart"></i> Begin Our Love Journey
+                </button>
+            </div>
+            <div class="progress-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Page 2: Love Story -->
+        <div class="page" id="page2">
+            <div class="content">
+                <h2>Our Love Story</h2>
+                <p>From the moment I met you, my life has been filled with so much joy and happiness.</p>
+                <p>Every day with you is a blessing, and I cherish every moment we spend together.</p>
+                <p>You are my sunshine on cloudy days and my comfort in difficult times.</p>
+                <div class="game-container">
+                    <button class="btn" onclick="nextPage(3)">
+                        <i class="fas fa-gamepad"></i> Play Our Love Game
+                    </button>
+                </div>
+            </div>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Page 3: Memory Game -->
+        <div class="page" id="page3">
+            <div class="content">
+                <h2>Memory Game</h2>
+                <p>Find all the matching pairs to reveal a special message!</p>
+                <div class="game-container">
+                    <div class="memory-game" id="memoryGame"></div>
+                    <button class="btn" id="resetGame">
+                        <i class="fas fa-redo"></i> Reset Game
+                    </button>
+                    <div id="gameMessage" class="message hidden">
+                        <h2>You Did It! <span class="heart">❤️</span></h2>
+                        <p>Just like you found all the matching pairs, I found my perfect match in you!</p>
+                        <button class="btn" onclick="nextPage(4)">
+                            <i class="fas fa-forward"></i> Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Page 4: Love Meter -->
+        <div class="page" id="page4">
+            <div class="content">
+                <h2>How Much Do I Love You?</h2>
+                <p>Let's measure our love!</p>
+                <div class="love-meter">
+                    <div class="love-fill" id="loveFill"></div>
+                </div>
+                <button class="btn" id="increaseLove">
+                    <i class="fas fa-heartbeat"></i> Increase Our Love
+                </button>
+                <div id="loveMessage" class="message hidden">
+                    <h2>My Love for You is Infinite!</h2>
+                    <p>No matter how much we try to measure it, my love for you knows no bounds!</p>
+                    <button class="btn" onclick="nextPage(5)">
+                        <i class="fas fa-forward"></i> See My Final Message
+                    </button>
+                </div>
+            </div>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Page 5: Final Message -->
+        <div class="page" id="page5">
+            <div class="content">
+                <h2>A Special Note Just For You</h2>
+                <div class="photo-frame">
+                    💕
+                </div>
+                <div id="specialNote" class="message">
+                    <h2>My Dearest Love,</h2>
+                    <p>Every day with you is a gift that I treasure. Your smile brightens my world, your laughter is my favorite melody, and your love is the greatest blessing in my life.</p>
+                    <p>I promise to always stand by your side, support your dreams, and love you more with each passing day.</p>
+                    <p>You are my today and all of my tomorrows.</p>
+                    <p>Forever yours,</p>
+                    <p><strong>[Your own Shendumani]</strong></p>
+                </div>
+                <button class="btn" onclick="nextPage(1)">
+                    <i class="fas fa-home"></i> Back to Beginning
+                </button>
+            </div>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const heartsContainer = document.getElementById('heartsContainer');
+            const heartCount = 20;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-float');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // Page navigation
+        let currentPage = 1;
+        
+        function nextPage(pageNumber) {
+            if (pageNumber < 1 || pageNumber > 5) return;
+            
+            const currentPageElement = document.getElementById(`page${currentPage}`);
+            const nextPageElement = document.getElementById(`page${pageNumber}`);
+            
+            // Update progress dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                if (index === pageNumber - 1) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            
+            // Transition pages
+            currentPageElement.classList.remove('active');
+            currentPageElement.classList.add('previous');
+            
+            setTimeout(() => {
+                nextPageElement.classList.add('active');
+                currentPage = pageNumber;
+                
+                // Initialize games when their page is opened
+                if (pageNumber === 3) {
+                    createMemoryGame();
+                }
+            }, 300);
+        }
+
+        // Love meter functionality
+        const increaseLoveBtn = document.getElementById('increaseLove');
+        const loveFill = document.getElementById('loveFill');
+        const loveMessage = document.getElementById('loveMessage');
+        let loveLevel = 0;
+
+        if (increaseLoveBtn) {
+            increaseLoveBtn.addEventListener('click', () => {
+                if (loveLevel < 100) {
+                    loveLevel += 10;
+                    loveFill.style.width = loveLevel + '%';
+                    
+                    if (loveLevel === 100) {
+                        loveMessage.classList.remove('hidden');
+                        increaseLoveBtn.innerHTML = '<i class="fas fa-heartbeat"></i> Love Overflow! ❤️';
+                    }
+                }
+            });
+        }
+
+        // Memory game functionality
+        const memoryGame = document.getElementById('memoryGame');
+        const resetGameBtn = document.getElementById('resetGame');
+        const gameMessage = document.getElementById('gameMessage');
+        
+        const symbols = ['❤️', '🌸', '🌟', '💕', '😊', '💖'];
+        let cards = [...symbols, ...symbols];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        
+        // Shuffle cards
+        function shuffleCards() {
+            cards.sort(() => Math.random() - 0.5);
+        }
+        
+        // Create memory game
+        function createMemoryGame() {
+            if (!memoryGame) return;
+            
+            memoryGame.innerHTML = '';
+            shuffledCards = [...cards];
+            shuffleCards();
+            flippedCards = [];
+            matchedPairs = 0;
+            if (gameMessage) gameMessage.classList.add('hidden');
+            
+            shuffledCards.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+                
+                card.innerHTML = `<span>?</span>`;
+                
+                card.addEventListener('click', flipCard);
+                memoryGame.appendChild(card);
+            });
+        }
+        
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains('flipped') && !this.classList.contains('matched')) {
+                this.classList.add('flipped');
+                this.innerHTML = `<span>${this.dataset.symbol}</span>`;
+                flippedCards.push(this);
+                
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 500);
+                }
+            }
+        }
+        
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                
+                if (matchedPairs === symbols.length && gameMessage) {
+                    setTimeout(() => {
+                        gameMessage.classList.remove('hidden');
+                    }, 500);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.innerHTML = `<span>?</span>`;
+                card2.innerHTML = `<span>?</span>`;
+            }
+            
+            flippedCards = [];
+        }
+        
+        if (resetGameBtn) {
+            resetGameBtn.addEventListener('click', createMemoryGame);
+        }
+
+        // Initialize everything when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            createHearts();
+        });
+    </script>
+</body>
+</html>
